@@ -19,6 +19,21 @@
 		if(hash.indexOf('#') === 0) {
 			hash = hash.substr(1);
 		}
+		var otherargs = hash.split("&");
+		var returnset = {layers:[], mapattributes:{}};
+		if (otherargs.length == 2){
+			try{
+				var setlayers = otherargs[1].split("=")[1].split(",");
+				$.each(setlayers, function(index,value){
+					returnset["layers"].push(value);
+				});
+
+			}
+			catch(err){
+				console.log("Hit the error -probably malformed hash:");
+				console.log(err);
+			}
+		}
 		var args = hash.split("/");
 		if (args.length == 3) {
 			var zoom = parseInt(args[0], 10),
