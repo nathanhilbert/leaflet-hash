@@ -42,11 +42,12 @@
 			if (isNaN(zoom) || isNaN(lat) || isNaN(lon)) {
 				return false;
 			} else {
-				return {
+				returnset["mapattributes"] = {
 					center: new L.LatLng(lat, lon),
 					zoom: zoom
 				};
 			}
+			return returnset;
 		} else {
 			return false;
 		}
@@ -130,7 +131,15 @@
 			if (parsed) {
 				this.movingMap = true;
 
-				this.map.setView(parsed.center, parsed.zoom);
+				this.map.setView(parsed.mapattributes.center, parsed.mapattributes.zoom);
+
+				//now turn on the layers that exist
+				if (parsed['layers'].length > 0){
+					//get layers by key
+					$.each(parsed['layers'], function(index, value){
+						console.log("turning on those that have " + value);
+					})
+				}
 
 				if (this.events['update']) {
 					for (var i=0; i<this.events['update'].length; i++) {
