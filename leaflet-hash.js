@@ -58,10 +58,20 @@
 		    zoom = map.getZoom(),
 		    precision = Math.max(0, Math.ceil(Math.log(zoom) / Math.LN2));
 
-		return "#" + [zoom,
+
+		var mapposition = "#" + [zoom,
 			center.lat.toFixed(precision),
 			center.lng.toFixed(precision)
 		].join("/");
+		if (!currentKey){
+			return mapposition;
+		}
+
+		var layersettings = currentKey;
+
+		return mapposition + "&layers=" + layersettings;
+
+
 	},
 
 	L.Hash.prototype = {
@@ -135,9 +145,29 @@
 
 				//now turn on the layers that exist
 				if (parsed['layers'].length > 0){
-					//get layers by key
+
+
+
+					//there will actually only be one layer
+					//sublayers will be separated by the '+'
 					$.each(parsed['layers'], function(index, value){
-						console.log("turning on those that have " + value);
+						//let's check if there is a sublayer to this
+						try{
+							var temparray = value.split("+");
+							mainLayer = temparray[0];
+							subLayer = temparray[1];
+						}
+						catch(err){
+							var mainLayer = value;
+						}
+						if (subLayer){
+							var mainClickCallbacker = function(){$("[name='" + subLayer + "']").trigger("click");}
+							$("[name='" + mainLayer + "']").trigger('click', mainClickCallbacker);
+						}
+						else{
+							$("[name='" + mainLayer + "']").trigger('click');
+						}
+
 					})
 				}
 
